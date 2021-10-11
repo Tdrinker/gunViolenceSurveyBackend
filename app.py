@@ -1,7 +1,10 @@
 import sys
 
 from flask import Flask, render_template, request
+from werkzeug.exceptions import BadRequest
 from argparse import ArgumentParser
+
+from utils.form_helpers import validate_sona_form
 
 app = Flask(__name__)
 
@@ -21,6 +24,10 @@ def sona():
 
 @app.route("/sona/login", methods=["POST"])
 def sona_login():
+    is_request_valid, msg = validate_sona_form(request.form)
+    if not is_request_valid:
+        return BadRequest(msg)
+
     return "hello world"
 
 
