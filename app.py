@@ -28,6 +28,9 @@ def sona():
 
 @app.route("/sona/login", methods=["GET", "POST"])
 def sona_login():
+    if session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
     if request.method == "GET":
         return render_template("sona_login.html")
 
@@ -55,6 +58,8 @@ def sona_informed_consent():
 
 @app.route("/sona/task")
 def sona_task():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
     return "{}{}".format(session[STUDENT_ID], session[CONSENT_AGREED])
 
 
