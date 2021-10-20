@@ -60,7 +60,7 @@ def sona_informed_consent():
 def sona_task():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
         return redirect(url_for("sona_informed_consent"))
-    return "{}{}".format(session[STUDENT_ID], session[CONSENT_AGREED])
+    return render_template("sona_task_01_information.html")
 
 
 if __name__ == "__main__":

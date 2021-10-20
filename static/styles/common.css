@@ -1,4 +1,9 @@
 
+.zero-margin-padding {
+    margin: 0;
+    padding: 0;
+}
+
 .form-label-padding {
     padding: 5px;
 }
@@ -25,4 +30,9 @@
 
 .margin-top-1-rem {
     margin-top: 1rem;
+}
+
+.example-form {
+    padding: 1rem;
+    background-color: #f0ffff;
 }

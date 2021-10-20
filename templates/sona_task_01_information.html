@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SONA - Gun Violence News Framing</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/common.css') }}">
+</head>
+<body>
+    <div class="vertical-filler-2-5"></div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center">Gun Violence Headline Emotion Detection</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <p>Hello, thanks for taking this task. The purpose of this task is to determine the emotion you feel towards gun violence related news. In particular towards gun violence related headlines. All of the headlines in this task originate from US news articles.</p>
+            <p>If you have any questions or comments regarding this task, feel free too reach out to me at: <a href="mailto:sejin@bu.edu">sejin@bu.edu</a>.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h4>Steps for the task: </h4>
+            <div id="step-1">
+                <h5>Step 1:</h5>
+                <p>You would be presented with a headline from US news article pertaining to gun violence, example: <span class="blockquote">"Cremated remains of Las Vegas mass shooter to be kept in safe deposit box, brother says"</span></p>
+            </div>
+
+            <div id="step-2">
+                <h5>Step 2:</h5>
+                <p>You would be asked about the emotion you feel on reading this headline. (Choose one of the button from the options given and the next question would appear.) Example:</p>
+
+                <div class="example-form">
+                    <p class="blockquote">Given the above news content (headline) in the context of gun violence, what is the dominant emotion that you feel?</p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Anger')" id="Anger_1" name="d_emotion_1" value=Anger>
+                        <label class="form-check-label" for="Anger_1">Anger</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Anticipation')" id="Anticipation_1" name="d_emotion_1" value=Anticipation>
+                        <label class="form-check-label" for="Anticipation_1">Anticipation</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Joy')" id="Joy_1" name="d_emotion_1" value=Joy>
+                        <label class="form-check-label" for="Joy_1">Joy</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Trust')" id="Trust_1" name="d_emotion_1" value=Trust>
+                        <label class="form-check-label" for="Trust_1">Trust</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Fear')" id="Fear_1" name="d_emotion_1" value=Fear>
+                        <label class="form-check-label" for="Fear_1">Fear</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Surprise')" id="Surprise_1" name="d_emotion_1"  value=Surprise>
+                        <label class="form-check-label" for="Surprise_1">Surprise</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Sadness')" id="Sadness_1" name="d_emotion_1" value=Sadness>
+                        <label for="Sadness_1">Sadness</label>
+                    </div>
+                    <div class="form-check">
+                         <input class="form-check-input" type="radio" onclick="clickedQuestionOne('Disgust')" id="Disgust_1" name="d_emotion_1" value=Disgust>
+                        <label class="form-check-label" for="Disgust_1">Disgust</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-3" style="display: none;">
+                <h5 style="margin-top: 1rem">Step 3:</h5>
+                <p>You would be asked to choose the intensity of the emotion you selected in <em>Step 2</em>. You would be presented with a slider having options for intensity from <em>1</em> to <em>5</em>, with <em>1</em> being most mild and <em>5</em> being most extreme. (Choose one amongst these three options and the next question would appear.) Example: </p>
+
+                <div class="example-form">
+                    <p class="blockquote">What is the intensity of your feeling?</p>
+                    <div class="form-group">
+                        <label class="form-label" for="emotion_intensity_scale">Intensity: </label>
+                        <input class="form-range" id="emotion_intensity_scale" type="range" name="emotion_intensity" min="1" max="5">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
