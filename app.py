@@ -60,7 +60,23 @@ def sona_informed_consent():
 def sona_task():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
         return redirect(url_for("sona_informed_consent"))
-    return render_template("sona_task_01_information.html")
+    return render_template("sona_task_03_information.html")
+
+
+@app.route("/sona/task/headline")
+def sona_task_headline():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
+    return "hello world"
+
+
+@app.route("/sona/task/image")
+def sona_task_image():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
+    return "hello world"
 
 
 if __name__ == "__main__":

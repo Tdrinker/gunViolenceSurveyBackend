@@ -8,17 +8,17 @@
 
     <script src="{{ url_for('static',filename='js/sona_task.js') }}"></script>
 </head>
-<body>
+<body onload="loadImage('step-1')">
     <div class="vertical-filler-2-5"></div>
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h2 class="text-center">Gun Violence Headline Emotion Detection</h2>
+            <h2 class="text-center">Gun Violence News Emotion Detection</h2>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <p>Hello, thanks for taking this task. The purpose of this task is to determine the emotion you feel towards gun violence related news. In particular towards gun violence related headlines. All of the headlines in this task originate from US news articles.</p>
+            <p>Hello, thanks for taking this task. The purpose of this task is to determine the emotion you feel towards gun violence related news. In particular towards gun violence related images and headlines. All of the headlines and images in this task originate from US news articles.</p>
             <p>If you have any questions or comments regarding this task, feel free too reach out to me at: <a href="mailto:sejin@bu.edu">sejin@bu.edu</a>.</p>
         </div>
     </div>
@@ -28,12 +28,13 @@
             <h4>Steps for the task: </h4>
             <div id="step-1">
                 <h5>Step 1:</h5>
-                <p>You would be presented with a headline from US news article pertaining to gun violence, example: <span class="blockquote">"Cremated remains of Las Vegas mass shooter to be kept in safe deposit box, brother says"</span></p>
+                <p>You would be presented with a Headline & Corresponding Image from US news article pertaining to gun violence, example:</p>
+                <p class="blockquote">"Cremated remains of Las Vegas mass shooter to be kept in safe deposit box, brother says"</p>
             </div>
 
             <div id="step-2">
-                <h5>Step 2:</h5>
-                <p>You would be asked about the emotion you feel on reading this headline. (Choose one of the button from the options given and the next question would appear.) Example:</p>
+                <h5 style="margin-top: 1rem">Step 2:</h5>
+                <p>You would be asked about the emotion you feel on seeing this image. (Choose one of the button from the options given and the next question would appear.) Example:</p>
 
                 <div class="example-form">
                     <p class="blockquote">Given the above news content (headline) in the context of gun violence, what is the dominant emotion that you feel?</p>
@@ -87,10 +88,10 @@
 
             <div id="step-4" style="display: none">
                 <h5 style="margin-top: 1rem">Step 4:</h5>
-                <p>You would be asked about the emotion you felt (in textual format this time, so you can be more expressive) and the corresponding reason for the same. For e.g. <em>This headline made me feel: <b>edifycing</b> because: <b>In the end all we did goes in vain, and death is eminent so why to pursue such misdeeds and waste our life.</b> Example: </p>
+                <p>You would be asked about the emotion you felt (in textual format this time, so you can be more expressive) and the corresponding reason for the same. For e.g. <em>This headline made me feel: <b>anticipative</b> because: <b>Police line and lights makes me feel like some gruesome crime happened here, making me anticipative as to something terribly wrong happened here.</b> Example: </p>
 
                 <div class="example-form">
-                    <p class="blockquote">This headline made me feel:</p>
+                    <p class="blockquote">This image made me feel:</p>
                     <div class="form-group">
                         <input class="form-control" id="t_emotion" type="text" name="t_emotion" placeholder="emotion">
                     </div>
@@ -101,7 +102,7 @@
                 </div>
             </div>
 
-            <form id="nextBtnForm" action="/sona/task/headline" style="display: none">
+            <form id="nextBtnForm" action="/sona/task/image" style="display: none">
                 <div class="col-md-2 col-lg-2 offset-md-5 offset-lg-5 margin-top-1-rem">
                     <button type="submit" class="btn btn-primary" formmethod="get" id="nextBtn">Next</button>
                 </div>
