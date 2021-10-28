@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SONA - Gun Violence News Framing</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/common.css') }}">
+</head>
+<body>
+
+    <form action="/sona/instructions" class="">
+        <div class="form-group form-group-margin">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <h2 class="text-center">Gun Violence Headline Emotion Detection</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <p>Hello, thanks for taking this task. The purpose of this task is to determine the emotion you feel towards gun violence related news. In particular towards gun violence related headlines. All of the headlines in this task originate from US news articles.</p>
+                    <p>If you have any questions or comments regarding this task, feel free too reach out to me at: <a href="mailto:sejin@bu.edu">sejin@bu.edu</a>.</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <h4>Steps for the task: </h4>
+                    <div id="step-1">
+                        <h5>Step 1:</h5>
+                        <p>How does this gun violence-related headline make you feel? (choose one of the buttons below and the next step will appear).</p>
+                    </div>
+
+                    <div id="step-2">
+                        <h5>Step 2:</h5>
+                        <p> What is the intensity of your feeling? (choose one of the buttons below).</p>
+                    </div>
+
+                    <div id="step-3">
+                        <h5 style="margin-top: 1rem">Step 3:</h5>
+                        <p>Give us a description (at least 5 words) about WHY you felt the emotion and the intensity of that emotion, based on the wording in the headline. </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 col-lg-2 offset-md-5 offset-lg-5">
+                <button type="submit" class="btn btn-primary" formmethod="post">Go to Survey</button>
+            </div>
+        </div>
+    </form>
+
+
+</body>
+</html>

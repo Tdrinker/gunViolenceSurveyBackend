@@ -6,7 +6,7 @@ from werkzeug.exceptions import BadRequest
 from argparse import ArgumentParser
 
 from utils.form_helpers import validate_sona_form, validate_sona_consent_form
-from utils.const import STUDENT_ID, CONSENT_AGREED
+from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
 from utils.html_texts import FORM_ERROR
 
 app = Flask(__name__)
@@ -26,23 +26,6 @@ def sona():
     return redirect(url_for("sona_informed_consent"))
 
 
-@app.route("/sona/login", methods=["GET", "POST"])
-def sona_login():
-    if session.get(CONSENT_AGREED) is None:
-        return redirect(url_for("sona_informed_consent"))
-
-    if request.method == "GET":
-        return render_template("sona_login.html")
-
-    is_request_valid, msg = validate_sona_form(request.form)
-    if not is_request_valid:
-        return BadRequest(msg)
-
-    session[STUDENT_ID] = request.form["studentId"]
-
-    return redirect(url_for("sona_task"))
-
-
 @app.route("/sona/consent", methods=["POST", "GET"])
 def sona_informed_consent():
     if request.method == "GET":
@@ -56,10 +39,48 @@ def sona_informed_consent():
     return redirect(url_for("sona_login"))
 
 
-@app.route("/sona/task")
-def sona_task():
+@app.route("/sona/login", methods=["GET", "POST"])
+def sona_login():
+    if session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
+    if request.method == "GET":
+        return render_template("sona_login.html")
+
+    is_request_valid, msg = validate_sona_form(request.form)
+    print("request.form: ", request.form)
+    if not is_request_valid:
+        print("bad request")
+        return BadRequest(msg)
+
+    print("before session storage")
+
+    session[STUDENT_ID] = request.form["studentId"]
+    session[COUNTRY] = request.form["country"]
+    session[IS_NATIVE] = request.form["isNative"]
+    session[EDUCATION] = request.form["education"]
+
+    print("redirecting to sona_instructions")
+
+    return redirect(url_for("sona_instructions"))
+
+
+@app.route("/sona/instructions", methods=["GET", "POST"])
+def sona_instructions():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
         return redirect(url_for("sona_informed_consent"))
+    if request.method == "GET":
+        return render_template("sona_instructions.html")
+
+    print("redirecting to survey")
+    return redirect(url_for("sona_survey"))
+
+
+@app.route("/sona/survey")
+def sona_survey():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
     return render_template("sona_task_03_information.html")
 
 
