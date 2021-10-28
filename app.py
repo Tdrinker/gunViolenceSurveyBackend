@@ -25,6 +25,7 @@ def index():
 def sona():
     return redirect(url_for("sona_informed_consent"))
 
+
 @app.route("/sona/consent", methods=["POST", "GET"])
 def sona_informed_consent():
     if request.method == "GET":
@@ -36,6 +37,7 @@ def sona_informed_consent():
 
     session[CONSENT_AGREED] = True
     return redirect(url_for("sona_login"))
+
 
 @app.route("/sona/login", methods=["GET", "POST"])
 def sona_login():
@@ -78,7 +80,24 @@ def sona_instructions():
 def sona_survey():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
         return redirect(url_for("sona_informed_consent"))
-    return render_template("sona_survey.html")
+
+    return render_template("sona_task_03_information.html")
+
+
+@app.route("/sona/task/headline")
+def sona_task_headline():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
+    return "hello world"
+
+
+@app.route("/sona/task/image")
+def sona_task_image():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+        return redirect(url_for("sona_informed_consent"))
+
+    return "hello world"
 
 
 if __name__ == "__main__":
