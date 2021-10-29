@@ -9,11 +9,19 @@ from utils.form_helpers import validate_sona_form, validate_sona_consent_form
 from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
 from utils.html_texts import FORM_ERROR
 
+from utils.dynamodb_handler import create_table_user, add_user, get_user
+
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid5(uuid.NAMESPACE_DNS, "aiem.bu.edu"))
 
 parser = ArgumentParser()
 parser.add_argument("--debug", help="Run the app in debug mode.", type=bool, default=False)
+
+
+@app.route("/create-table-user")
+def dynamodb():
+    create_table_user()
+    return render_template("dynamo_table_created.html")
 
 
 @app.route("/")
@@ -39,6 +47,16 @@ def sona_informed_consent():
     return redirect(url_for("sona_login"))
 
 
+def user_login(request_form):
+    user = get_user(request_form)
+
+    if not 'Item' in user:
+        print("adding new user")
+        add_user_respond = add_user(request_form)
+        print(add_user_respond)
+    else:
+        print("existing user found")
+
 @app.route("/sona/login", methods=["GET", "POST"])
 def sona_login():
     if session.get(CONSENT_AGREED) is None:
@@ -47,20 +65,18 @@ def sona_login():
     if request.method == "GET":
         return render_template("sona_login.html")
 
-    is_request_valid, msg = validate_sona_form(request.form)
     print("request.form: ", request.form)
+
+    is_request_valid, msg = validate_sona_form(request.form)
     if not is_request_valid:
-        print("bad request")
         return BadRequest(msg)
 
-    print("before session storage")
+    user_login(request.form)
 
     session[STUDENT_ID] = request.form["studentId"]
     session[COUNTRY] = request.form["country"]
     session[IS_NATIVE] = request.form["isNative"]
     session[EDUCATION] = request.form["education"]
-
-    print("redirecting to sona_instructions")
 
     return redirect(url_for("sona_instructions"))
 
