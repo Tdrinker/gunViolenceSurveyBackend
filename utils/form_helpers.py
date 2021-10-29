@@ -43,7 +43,8 @@ def is_valid_education(education: str) -> bool:
 
 
 def is_valid_student_id(student_id: str) -> bool:
-    return len(student_id) == 10 and student_id.isdigit()
+    return student_id.isdigit()
+    # return len(student_id) == 10 and student_id.isdigit()
 
 
 def is_valid_name(name: str) -> bool:
