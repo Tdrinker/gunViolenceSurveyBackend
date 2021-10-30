@@ -16,3 +16,4 @@ REGION_NAME='us-east-1'
 recreate them.
 * To create a table, do so with the implemented APIs. For example, if you want to create the table User:
 http://127.0.0.1:5000/create-table-user
+* In `create_table_task()`, we are reading the data from a csv file which did not include on the github repo for data privacy concerns.
