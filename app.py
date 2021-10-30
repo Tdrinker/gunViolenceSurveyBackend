@@ -9,7 +9,7 @@ from utils.form_helpers import validate_sona_form, validate_sona_consent_form
 from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
 from utils.html_texts import FORM_ERROR
 
-from utils.dynamodb_handler import create_table_user, add_user, get_user
+from utils.dynamodb_handler import create_table_user, add_user, get_user, create_table_task, populate_table_task
 
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid5(uuid.NAMESPACE_DNS, "aiem.bu.edu"))
@@ -19,8 +19,20 @@ parser.add_argument("--debug", help="Run the app in debug mode.", type=bool, def
 
 
 @app.route("/create-table-user")
-def dynamodb():
+def dynamodb_create_user():
     create_table_user()
+    return render_template("dynamo_table_created.html")
+
+
+@app.route("/create-table-task")
+def dynamodb_create_task():
+    create_table_task()
+    return render_template("dynamo_table_created.html")
+
+
+@app.route("/populate-table-task")
+def dynamodb_populate_task():
+    populate_table_task()
     return render_template("dynamo_table_created.html")
 
 
@@ -56,6 +68,7 @@ def user_login(request_form):
         print(add_user_respond)
     else:
         print("existing user found")
+
 
 @app.route("/sona/login", methods=["GET", "POST"])
 def sona_login():

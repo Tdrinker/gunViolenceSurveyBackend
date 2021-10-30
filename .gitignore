@@ -3,3 +3,5 @@
 *$py.class
 .env
 .idea/
+data/
+.DS_Store
