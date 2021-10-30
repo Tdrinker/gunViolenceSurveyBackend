@@ -124,7 +124,8 @@ def add_user(form: Dict[str, Any]):
             'id': int(form[STUDENT_ID]),
             'citizenship': form[COUNTRY],
             'isNative': form[IS_NATIVE] == "native",
-            'education': form[EDUCATION]
+            'education': form[EDUCATION],
+            'task_group': 0
         }
     )
     return response
