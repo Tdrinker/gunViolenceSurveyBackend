@@ -18,24 +18,6 @@ parser = ArgumentParser()
 parser.add_argument("--debug", help="Run the app in debug mode.", type=bool, default=False)
 
 
-@app.route("/create-table-user")
-def dynamodb_create_user():
-    create_table_user()
-    return render_template("dynamo_table_created.html")
-
-
-@app.route("/create-table-task")
-def dynamodb_create_task():
-    create_table_task()
-    return render_template("dynamo_table_created.html")
-
-
-@app.route("/populate-table-task")
-def dynamodb_populate_task():
-    populate_table_task()
-    return render_template("dynamo_table_created.html")
-
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -62,7 +44,7 @@ def sona_informed_consent():
 def user_login(request_form):
     user = get_user(request_form)
 
-    if not 'Item' in user:
+    if not "Item" in user:
         print("adding new user")
         add_user_respond = add_user(request_form)
         print(add_user_respond)
