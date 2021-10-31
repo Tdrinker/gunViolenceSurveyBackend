@@ -81,13 +81,13 @@ def populate_table_task_group(df, group_num):
 
 
 def create_table_task():
-    for i in range(20, 21):
+    for i in range(21, 31):
         create_table_task_group(i)
 
 
 def populate_table_task():
     df = read_csv_data()
-    for i in range(11, 21):
+    for i in range(21, 31):
         populate_table_task_group(df, i)
 
 
@@ -142,5 +142,7 @@ if __name__ == "__main__":
         print("please provide a task to be ran, with --task option.")
     elif args.task == "create_task":
         create_table_task()
+    elif args.task == "populate_task":
+        populate_table_task()
 
     # print(args.task)
