@@ -1,11 +1,13 @@
 import boto3
 import os
 from dotenv import load_dotenv
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
 from typing import Dict, Tuple, Any
 import pandas as pd
 from os.path import abspath
 import uuid
+
+from argparse import ArgumentParser
+import sys
 
 load_dotenv()
 
@@ -13,6 +15,14 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 REGION_NAME = os.getenv("REGION_NAME")
 
+STUDENT_ID = "studentId"
+CONSENT_AGREED = "consentAgreed"
+COUNTRY = "country"
+IS_NATIVE = "isNative"
+EDUCATION = "education"
+
+parser = ArgumentParser()
+parser.add_argument("--task", help="Task to be ran, options: create_task, populate_task", type=str, default="")
 
 client = boto3.client(
     "dynamodb",
@@ -71,13 +81,13 @@ def populate_table_task_group(df, group_num):
 
 
 def create_table_task():
-    for i in range(1, 11):
+    for i in range(20, 21):
         create_table_task_group(i)
 
 
 def populate_table_task():
     df = read_csv_data()
-    for i in range(1, 11):
+    for i in range(11, 21):
         populate_table_task_group(df, i)
 
 
@@ -123,3 +133,14 @@ def get_user(form: Dict[str, Any]):
 
     response = user_table.get_item(Key={"id": id})
     return response
+
+
+if __name__ == "__main__":
+    args = parser.parse_args(sys.argv[1:])
+
+    if args.task == "":
+        print("please provide a task to be ran, with --task option.")
+    elif args.task == "create_task":
+        create_table_task()
+
+    # print(args.task)
