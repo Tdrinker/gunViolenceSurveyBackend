@@ -53,6 +53,14 @@ function loadSurvey(data) {
         let sampleDiv = loadSample(data["samples"][i], i+1);
         surveyDiv.appendChild(sampleDiv);
     }
+
+    let submitBtn = document.createElement("button");
+    submitBtn.type = "submit";
+    submitBtn.className = "btn btn-primary";
+    submitBtn.formmethod = "post";
+    submitBtn.id = "submitBtn";
+    submitBtn.innerText = "Submit";
+    surveyDiv.appendChild(submitBtn);
 }
 
 function loadSample(sample, sample_number) {
@@ -153,6 +161,7 @@ function getQuestions(sample_number) {
     emotionTextArea.placeholder = "describe your reason here.";
     emotionTextArea.rows = "5";
     questionDiv.appendChild(emotionTextArea);
+    questionDiv.appendChild(verticalFiller)
 
     return questionDiv
 }

@@ -98,17 +98,9 @@ def sona_survey():
     return render_template("sona_task.html", data=data)
 
 
-@app.route("/sona/task/headline")
-def sona_task_headline():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
-        return redirect(url_for("sona_informed_consent"))
-
-    return "hello world"
-
-
-@app.route("/sona/task/image")
-def sona_task_image():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+@app.route("/sona/survey/submit", methods=["POST"])
+def sona_survey_submit():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
         return redirect(url_for("sona_informed_consent"))
 
     return "hello world"
