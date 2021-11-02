@@ -1,6 +1,3 @@
-// var data = JSON.parse('{{ data | tojson | safe }}');
-// console.log(data)
-
 function clickedQuestionOne() {
     let isAnyChecked = false;
     let emotions = document.getElementsByName("d_emotion_1");
@@ -120,6 +117,43 @@ function getQuestions(sample_number) {
     question2Para.className = "blockquote";
     questionDiv.appendChild(question2Para);
 
+    let intensityForm = getIntensityForm(sample_number);
+    questionDiv.appendChild(intensityForm);
+
+    let question3Para = document.createElement("p");
+    question3Para.innerText = "The above news content made me feel:";
+    question3Para.className = "blockquote";
+    questionDiv.appendChild(question3Para);
+
+    let tEmotionName = "t_emotion_" + sample_number;
+    let emotionTextDiv = document.createElement("div");
+    emotionTextDiv.className = "form-group";
+
+    let emotionTextInput = document.createElement("input");
+    emotionTextInput.className = "form-control";
+    emotionTextInput.name = tEmotionName;
+    emotionTextInput.id = tEmotionName;
+    emotionTextInput.type = "text";
+    emotionTextInput.placeholder = "emotion";
+    emotionTextDiv.appendChild(emotionTextInput);
+    questionDiv.appendChild(emotionTextDiv);
+    questionDiv.appendChild(verticalFiller)
+
+    let tEmotionReasonName = "t_emotion_reason_" + sample_number;
+    let question4Para = document.createElement("p");
+    question4Para.innerText = "because:";
+    question4Para.className = "blockquote";
+    questionDiv.appendChild(question4Para);
+
+    let emotionTextArea = document.createElement("textarea");
+    emotionTextArea.className = "form-control";
+    emotionTextArea.name = tEmotionReasonName;
+    emotionTextArea.id = tEmotionReasonName;
+    emotionTextArea.type = "text";
+    emotionTextArea.placeholder = "describe your reason here.";
+    emotionTextArea.rows = "5";
+    questionDiv.appendChild(emotionTextArea);
+
     return questionDiv
 }
 
@@ -145,4 +179,28 @@ function getFormCheck(emotion, sample_number) {
     formCheck.appendChild(label);
 
     return formCheck
+}
+
+function getIntensityForm(sample_number) {
+    let name = "emotion_intensity_" + sample_number;
+
+    let formGroup = document.createElement("div");
+    formGroup.className = "form-group";
+
+    let label = document.createElement("label");
+    label.className = "form-label";
+    label.innerText = "Intensity: ";
+    formGroup.appendChild(label);
+
+    let rangeInput = document.createElement("input");
+    rangeInput.className = "form-range";
+    rangeInput.id = name;
+    rangeInput.name = name;
+    rangeInput.type = "range";
+    rangeInput.min = 1;
+    rangeInput.max = 5;
+    formGroup.appendChild(rangeInput);
+
+
+    return formGroup;
 }
