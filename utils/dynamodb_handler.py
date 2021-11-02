@@ -5,9 +5,11 @@ from typing import Dict, Tuple, Any
 import pandas as pd
 from os.path import abspath
 import uuid
+import random
 
 from argparse import ArgumentParser
 import sys
+from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
 
 load_dotenv()
 
@@ -15,11 +17,6 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 REGION_NAME = os.getenv("REGION_NAME")
 
-STUDENT_ID = "studentId"
-CONSENT_AGREED = "consentAgreed"
-COUNTRY = "country"
-IS_NATIVE = "isNative"
-EDUCATION = "education"
 
 parser = ArgumentParser()
 parser.add_argument("--task", help="Task to be ran, options: create_task, populate_task", type=str, default="")
@@ -112,7 +109,7 @@ def create_table_user():
     )
 
 
-def add_user(form: Dict[str, Any]):
+def add_user(form: Dict[str, Any], previous_task_group=0):
     user_table = resource.Table("User")
 
     response = user_table.put_item(
@@ -121,10 +118,54 @@ def add_user(form: Dict[str, Any]):
             "citizenship": form[COUNTRY],
             "isNative": form[IS_NATIVE] == "native",
             "education": form[EDUCATION],
-            "task_group": 0,
+            "previous_task_group": 0,
         }
     )
-    return response
+
+    return get_user(form)
+
+
+def assign_task_group(previous_task_group=0):
+    task_group = 0
+
+    if previous_task_group == 0:
+        task_group = get_group_count()
+    elif previous_task_group >= 1 and previous_task_group <= 10:
+        task_group = get_group_count(min_group=1, max_group=10)
+    elif previous_task_group >= 11 and previous_task_group <= 20:
+        task_group = get_group_count(min_group=11, max_group=20)
+    elif previous_task_group >= 21 and previous_task_group <= 30:
+        task_group = get_group_count(min_group=21, max_group=30)
+
+    return task_group
+
+
+def get_task(task_group, student_id):
+    ts = resource.Table("Task_group_" + str(task_group))
+    res = ts.scan()
+
+    for item in res["Items"]:
+        if item["completed"] == "False":
+            return item
+
+    return None
+
+
+def get_group_count(min_group=1, max_group=30):
+    minimal_task_group = 0
+    minimal_task_group_count = 200
+    for i in range(min_group, max_group + 1):
+        ts = resource.Table("Task_group_" + str(i))
+        res = ts.scan(
+            Select="COUNT", ScanFilter={"completed": {"AttributeValueList": [True], "ComparisonOperator": "EQ"}}
+        )
+        if res["Count"] < minimal_task_group_count:
+            minimal_task_group = i
+            minimal_task_group_count = res["Count"]
+        elif res["Count"] == minimal_task_group_count:
+            minimal_task_group = random.choice([minimal_task_group, i])
+
+    return minimal_task_group
 
 
 def get_user(form: Dict[str, Any]):
@@ -132,6 +173,7 @@ def get_user(form: Dict[str, Any]):
     id = int(form[STUDENT_ID])
 
     response = user_table.get_item(Key={"id": id})
+
     return response
 
 
@@ -144,5 +186,3 @@ if __name__ == "__main__":
         create_table_task()
     elif args.task == "populate_task":
         populate_table_task()
-
-    # print(args.task)

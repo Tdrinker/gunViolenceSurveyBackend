@@ -7,42 +7,43 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/common.css') }}">
 </head>
 <body>
+    <div class="vertical-filler-2-5"></div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center">Gun Violence Headline Emotion Detection</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <p>Hello, thanks for coming to this survey! The survey is conducted by the <b>Artificial Intelligence and Emerging Media (AIEM)</b> research group at <span class="blockquote">Boston University.</span></p>
 
-    <form action="/sona/instructions" class="">
-        <div class="form-group form-group-margin">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h2 class="text-center">Gun Violence Headline Emotion Detection</h2>
-                </div>
+            <p>The purpose of this project is to understand what emotion people feel toward gun violence related images and headlines. All of the images and headlines originate from U.S. news articles. Please take this survey only if you are native English speaker.</p>
+
+            <p>The survey consists of four sections, and each section will take you around 30 minutes to complete. You are allowed to finish all four sections at one time, or finish each section one by one at your own convenience before ??. In each section, you will be shown news images or headlines about gun violence, and then be asked to answer questionnaires relating to news content.</p>
+
+            <p>After finishing all four sections, you will be given 2 credits as reward. The 2 credits will be granted only after you finish all four sections of the survey. Also please ensure that when you begin a section, you have enough time to complete it, as we cannot save your progress unless the entire section (roughly 30 minutes) is completed. Please remember to complete four sections before the deadline ??. Otherwise, no credit will be assigned.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h4>Steps for the task: </h4>
+            <div id="step-1">
+                <h5>Step 1:</h5>
+                <p>How does this gun violence-related headline or image make you feel? (choose one of the buttons below and the next step will appear).</p>
             </div>
 
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <p>Hello, thanks for taking this task. The purpose of this task is to determine the emotion you feel towards gun violence related news. In particular towards gun violence related headlines. All of the headlines in this task originate from US news articles.</p>
-                    <p>If you have any questions or comments regarding this task, feel free too reach out to me at: <a href="mailto:sejin@bu.edu">sejin@bu.edu</a>.</p>
-                </div>
+            <div id="step-2">
+                <h5>Step 2:</h5>
+                <p> What is the intensity of your feeling? (choose one of the options on 5 point scale).</p>
             </div>
 
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h4>Steps for the task: </h4>
-                    <div id="step-1">
-                        <h5>Step 1:</h5>
-                        <p>How does this gun violence-related headline make you feel? (choose one of the buttons below and the next step will appear).</p>
-                    </div>
-
-                    <div id="step-2">
-                        <h5>Step 2:</h5>
-                        <p> What is the intensity of your feeling? (choose one of the buttons below).</p>
-                    </div>
-
-                    <div id="step-3">
-                        <h5 style="margin-top: 1rem">Step 3:</h5>
-                        <p>Give us a description (at least 5 words) about WHY you felt the emotion and the intensity of that emotion, based on the wording in the headline. </p>
-                    </div>
-                </div>
+            <div id="step-3">
+                <h5 style="margin-top: 1rem">Step 3:</h5>
+                <p>Give us a description (at least 5 words) about WHY you felt the emotion and the intensity of that emotion, based on the wording in the headline or any attributes of the image. </p>
             </div>
         </div>
+    </div>
+    <form action="/sona/survey" class="">
         <div class="row">
             <div class="col-md-2 col-lg-2 offset-md-5 offset-lg-5">
                 <button type="submit" class="btn btn-primary" formmethod="post">Go to Survey</button>

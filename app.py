@@ -6,10 +6,10 @@ from werkzeug.exceptions import BadRequest
 from argparse import ArgumentParser
 
 from utils.form_helpers import validate_sona_form, validate_sona_consent_form
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
+from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, TASK_GROUP
 from utils.html_texts import FORM_ERROR
 
-from utils.dynamodb_handler import create_table_user, add_user, get_user, create_table_task, populate_table_task
+from utils.dynamodb_handler import add_user, get_user, assign_task_group, get_task
 
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid5(uuid.NAMESPACE_DNS, "aiem.bu.edu"))
@@ -43,13 +43,14 @@ def sona_informed_consent():
 
 def user_login(request_form):
     user = get_user(request_form)
+    is_new_user = True
 
     if not "Item" in user:
-        print("adding new user")
-        add_user_respond = add_user(request_form)
-        print(add_user_respond)
+        user = add_user(request_form)
     else:
-        print("existing user found")
+        is_new_user = False
+
+    return is_new_user, user
 
 
 @app.route("/sona/login", methods=["GET", "POST"])
@@ -60,39 +61,41 @@ def sona_login():
     if request.method == "GET":
         return render_template("sona_login.html")
 
-    print("request.form: ", request.form)
-
     is_request_valid, msg = validate_sona_form(request.form)
     if not is_request_valid:
         return BadRequest(msg)
 
-    user_login(request.form)
+    is_new_user, user = user_login(request.form)
+    task_group = assign_task_group(int(user["Item"]["previous_task_group"]))
 
     session[STUDENT_ID] = request.form["studentId"]
     session[COUNTRY] = request.form["country"]
     session[IS_NATIVE] = request.form["isNative"]
     session[EDUCATION] = request.form["education"]
+    session[TASK_GROUP] = task_group
 
     return redirect(url_for("sona_instructions"))
 
 
-@app.route("/sona/instructions", methods=["GET", "POST"])
+@app.route("/sona/instructions", methods=["GET"])
 def sona_instructions():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
         return redirect(url_for("sona_informed_consent"))
-    if request.method == "GET":
-        return render_template("sona_instructions.html")
 
-    print("redirecting to survey")
-    return redirect(url_for("sona_survey"))
+    task_group = session[TASK_GROUP]
+
+    return render_template("sona_instructions.html")
 
 
-@app.route("/sona/survey")
+@app.route("/sona/survey", methods=["POST"])
 def sona_survey():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
         return redirect(url_for("sona_informed_consent"))
 
-    return render_template("sona_task_03_information.html")
+    task_group = 1  # session[TASK_GROUP]
+    data = get_task(task_group, session[STUDENT_ID])
+
+    return render_template("sona_task.html", data=data)
 
 
 @app.route("/sona/task/headline")

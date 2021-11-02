@@ -1,3 +1,6 @@
+// var data = JSON.parse('{{ data | tojson | safe }}');
+// console.log(data)
+
 function clickedQuestionOne() {
     let isAnyChecked = false;
     let emotions = document.getElementsByName("d_emotion_1");
@@ -21,13 +24,12 @@ function clickedQuestionOne() {
     }
 }
 
-function loadImage(id_div) {
-    let imageDiv = document.getElementById(id_div);
-    console.log(id_div);
-    console.log(imageDiv);
-
+function loadImage(imageUrl) {
+    let imageDiv = document.createElement("div");
+    imageDiv.className = "text-center";
     let emotionImage = new Image();
-    emotionImage.src = "https://lh3.googleusercontent.com/fife/AAWUweW6pbNzOvTblEsR7Qx3IN4pNNXaEP1nJTUu7XyEAo4-jKsdDpRRyfkPnA5iF8xtXayxZQ_ccyVr2GM228g80vOz5nSs-ifLfEyqwzwUuHhagLUkw6vOcXfPRBgAaJRbdCEGtcBdO_gUAcPZA15W5r7aZLF7r5Xbql_CjEGiJEDeuMfjGfhTiMfAKuAWjiLSi_d6YWub-Qcs23Akg4u-UJDj3HEs3toypo8dScos1uys36eCmwYle1zRYX3t8Yv6lA1PgB5H8alkN68_RfkMeI6OExxqu3CE1MTcIETlwZPQJIGYHByCx0J3xjCrR3SO4ZYXYpuGd_MSdw_OBdi0Z-CaYxry14z6iWpOOmctoCVLcB7lqU1kktUgy1w7OitrQ3a2TraumCa6SJ_kaTDLbr8196GlNxuJ5qwG0nFjlyy_WBVnPT9Vy_oAWoI-K7Xg2_5ztZVPX7OgXSJjXS0V9QIbedDlErigNbfzPbxfTTYyLoVvIkf6v8A5LFI61evhB_-uUyfUGr7KNqd9wBDLouXrFp77uCy9Qv6aaSs-uMoMKL4PuqyRF7mBYjEedVDBTrmLMLrzhH1wtdA4rOEtx-TnT_J1YHFSdWMHBGrgnSqauYcG-1l8jNTNc7rYp3grH9DyWdGtMSRdgscet5jImzUmLUjYlwRf7alKUdJ3-6LSPdZE6PVWclWMo8CWnMg-oTjjmiw59-WnMLI_tdi4ecHjNd7fuSC6NUc=w2000-h1510-ft";
+
+    emotionImage.src = imageUrl;
 
     let i = 1;
     while (true) {
@@ -42,5 +44,105 @@ function loadImage(id_div) {
     emotionImage.height = Math.floor(emotionImage.height / i);
     emotionImage.className = "img-thumbnail";
 
-    imageDiv.appendChild(emotionImage)
+    imageDiv.appendChild(emotionImage);
+
+    return imageDiv;
+}
+
+function loadSurvey(data) {
+    let surveyDiv = document.getElementById("survey");
+
+    for(let i = 0; i < data["samples"].length; i++) {
+        let sampleDiv = loadSample(data["samples"][i], i+1);
+        surveyDiv.appendChild(sampleDiv);
+    }
+}
+
+function loadSample(sample, sample_number) {
+    let sampleContainer = document.createElement("div");
+    sampleContainer.className = "col-md-8 offset-md-2 vertical-filler-5";
+
+    let header = document.createElement("h4");
+    header.innerText = "Sample " + sample_number;
+    sampleContainer.appendChild(header);
+
+    let sampleId = "sample_" + sample_number;
+    let questionId = "question_" + sample_number;
+    let imgId = "img_url_" + sample_number;
+
+    let sampleDiv = document.createElement("div");
+    sampleDiv.id = sampleId;
+    sampleContainer.appendChild(sampleDiv);
+
+    if (sample[questionId] !== undefined) {
+        let headlineParagraph = document.createElement("p");
+        headlineParagraph.innerText = sample[questionId];
+        headlineParagraph.className = "blockquote text-center";
+        sampleDiv.appendChild(headlineParagraph);
+    }
+
+    if (sample[imgId] !== undefined) {
+        let emotionImageDiv = loadImage(sample[imgId]);
+        sampleDiv.appendChild(emotionImageDiv);
+    }
+
+    let verticalFiller = document.createElement("div");
+    verticalFiller.className = "vertical-filler-2-5";
+
+    sampleDiv.appendChild(verticalFiller);
+
+    questionDiv = getQuestions(sample_number);
+    sampleDiv.appendChild(questionDiv);
+
+    return sampleContainer;
+}
+
+function getQuestions(sample_number) {
+    let questionDiv = document.createElement("div");
+
+    let question1Para = document.createElement("p");
+    question1Para.innerText = "Given the above news content in the context of gun violence, what is the dominant emotion that you feel?";
+    question1Para.className = "blockquote";
+    questionDiv.appendChild(question1Para);
+
+    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger"];
+    for (let i = 0; i < emotions.length; i++) {
+        let option = getFormCheck(emotions[i], sample_number);
+        questionDiv.appendChild(option);
+    }
+
+    let verticalFiller = document.createElement("div");
+    verticalFiller.className = "vertical-filler-2-5";
+    questionDiv.appendChild(verticalFiller);
+
+    let question2Para = document.createElement("p");
+    question2Para.innerText = "What is the intensity of your feeling?";
+    question2Para.className = "blockquote";
+    questionDiv.appendChild(question2Para);
+
+    return questionDiv
+}
+
+function getFormCheck(emotion, sample_number) {
+    let emotionId = emotion + sample_number;
+    let name = "d_emotion_" + sample_number;
+
+    let formCheck = document.createElement("div");
+    formCheck.className = "form-check";
+
+    let radioBtn = document.createElement("input");
+    radioBtn.type = "radio";
+    radioBtn.id = emotionId;
+    radioBtn.name = name;
+    radioBtn.value = emotion;
+    radioBtn.className = "form-check-input";
+    formCheck.appendChild(radioBtn);
+
+    let label = document.createElement("label");
+    label.for = emotionId;
+    label.className = "form-check-label";
+    label.innerText = emotion;
+    formCheck.appendChild(label);
+
+    return formCheck
 }
