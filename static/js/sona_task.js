@@ -37,8 +37,10 @@ function loadImage(imageUrl) {
         }
     }
 
-    emotionImage.width = Math.floor(emotionImage.width / i);
-    emotionImage.height = Math.floor(emotionImage.height / i);
+//    emotionImage.width = Math.floor(emotionImage.width / i);
+//    emotionImage.height = Math.floor(emotionImage.height / i);
+    emotionImage.width = 500;
+    emotionImage.height = 300;
     emotionImage.className = "img-thumbnail";
 
     imageDiv.appendChild(emotionImage);
