@@ -10,7 +10,7 @@ import random
 from argparse import ArgumentParser
 import sys
 
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, US_DURATION, MEDIA_TIME
+from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, US_DURATION, POLITICS, MEDIA_TIME
 
 load_dotenv()
 
@@ -150,6 +150,7 @@ def add_user(form: Dict[str, Any], previous_task_group=0):
             "education": form[EDUCATION],
             "usDuration": form[US_DURATION],
             "mediaTime": form[MEDIA_TIME],
+            "politics": form[POLITICS],
             "previous_task_group": 0,
         }
     )
