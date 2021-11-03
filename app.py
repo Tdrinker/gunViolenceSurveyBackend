@@ -1,15 +1,16 @@
 import sys
 import uuid
+import json
 
 from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.exceptions import BadRequest
 from argparse import ArgumentParser
 
 from utils.form_helpers import validate_sona_form, validate_sona_consent_form
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, TASK_GROUP
+from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, TASK_GROUP, SAMPLE_ID
 from utils.html_texts import FORM_ERROR
 
-from utils.dynamodb_handler import add_user, get_user, assign_task_group, get_task
+from utils.dynamodb_handler import add_user, get_user, assign_task_group, get_task, write_response
 
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid5(uuid.NAMESPACE_DNS, "aiem.bu.edu"))
@@ -92,18 +93,38 @@ def sona_survey():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
         return redirect(url_for("sona_informed_consent"))
 
-    task_group = 1  # session[TASK_GROUP]
+    task_group = session[TASK_GROUP]
     data = get_task(task_group, session[STUDENT_ID])
+    session[SAMPLE_ID] = data["id"]
 
     return render_template("sona_task.html", data=data)
 
 
 @app.route("/sona/survey/submit", methods=["POST"])
 def sona_survey_submit():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
+    if session.get(STUDENT_ID) is None or session.get(TASK_GROUP) is None or session.get(SAMPLE_ID) is None:
         return redirect(url_for("sona_informed_consent"))
 
-    return "hello world"
+    sampleId = session[SAMPLE_ID]
+    taskGroup = session[TASK_GROUP]
+    studentId = session[STUDENT_ID]
+
+    res = write_response(studentId, sampleId, taskGroup, request.form)
+
+    if res["ResponseMetadata"]["HTTPStatusCode"] == 200:
+        return render_template("submission_successful.html")
+    else:
+        return (
+            "There is an error in your submission, please copy this text and email it to sejin@bu.edu for completing survey: "
+            + json.dumps(
+                {
+                    "studentId": int(studentId),
+                    "sampleId": int(sampleId),
+                    "taskGroup": int(taskGroup),
+                    "response": dict(form),
+                }
+            )
+        )
 
 
 if __name__ == "__main__":

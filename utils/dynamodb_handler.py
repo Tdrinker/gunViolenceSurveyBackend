@@ -9,6 +9,7 @@ import random
 
 from argparse import ArgumentParser
 import sys
+
 from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
 
 load_dotenv()
@@ -40,6 +41,35 @@ def read_csv_data():
 
     df = pd.read_csv(path1)
     return df
+
+
+def create_table_response():
+    client.create_table(
+        AttributeDefinitions=[  # Name and type of the attributes
+            {
+                "AttributeName": "id",  # Name of the attribute
+                "AttributeType": "S",  # N -> Number (S -> String, B-> Binary)
+            },
+            {
+                "AttributeName": "studentId",  # Name of the attribute
+                "AttributeType": "N",  # N -> Number (S -> String, B-> Binary)
+            },
+        ],
+        TableName="Responses",  # Name of the table
+        KeySchema=[  # Partition key/sort key attribute
+            {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+                # 'HASH' -> partition key, 'RANGE' -> sort key
+            },
+            {
+                "AttributeName": "studentId",
+                "KeyType": "RANGE"
+                # 'HASH' -> partition key, 'RANGE' -> sort key
+            },
+        ],
+        BillingMode="PAY_PER_REQUEST",
+    )
 
 
 def create_table_task_group(group_num):
@@ -142,13 +172,26 @@ def assign_task_group(previous_task_group=0):
 
 def get_task(task_group, student_id):
     ts = resource.Table("Task_group_" + str(task_group))
+    previous_ids = get_student_responses_ids(student_id)
     res = ts.scan()
 
     for item in res["Items"]:
-        if item["completed"] == "False":
+        if item["completed"] == "False" and int(item["id"]) not in previous_ids:
             return item
 
     return None
+
+
+def get_student_responses_ids(student_id):
+    response_table = resource.Table("Responses")
+    previous_ids = []
+
+    res = response_table.scan()
+    for item in res["Items"]:
+        if int(item["studentId"]) == int(student_id):
+            previous_ids.append(int(item["sampleId"]))
+
+    return set(previous_ids)
 
 
 def get_group_count(min_group=1, max_group=30):
@@ -177,6 +220,27 @@ def get_user(form: Dict[str, Any]):
     return response
 
 
+def write_response(studentId, sampleId, taskGroup, form):
+    item = {
+        "id": str(uuid.uuid4()),
+        "studentId": int(studentId),
+        "sampleId": int(sampleId),
+        "taskGroup": int(taskGroup),
+        "response": dict(form),
+    }
+    response_table = resource.Table("Responses")
+    res = response_table.put_item(Item=item)
+
+    user = get_user({STUDENT_ID: studentId})
+    user = user["Item"]
+    user["previous_task_group"] = int(taskGroup)
+
+    user_table = resource.Table("User")
+    user_table.put_item(Item=user)
+
+    return res
+
+
 if __name__ == "__main__":
     args = parser.parse_args(sys.argv[1:])
 
@@ -186,3 +250,5 @@ if __name__ == "__main__":
         create_table_task()
     elif args.task == "populate_task":
         populate_table_task()
+    elif args.task == "create_response":
+        create_table_response()

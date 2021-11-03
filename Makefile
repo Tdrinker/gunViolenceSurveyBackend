@@ -9,3 +9,6 @@ dynamo_create_task:
 
 dynamo_populate_task:
 	python3 utils/dynamodb_handler.py --task populate_task
+
+create_response:
+	python3 utils/dynamodb_handler.py --task create_response
