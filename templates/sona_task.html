@@ -24,6 +24,11 @@
 
 <script type="text/javascript">
     var data = JSON.parse('{{ data | tojson | safe }}');
+    console.log("data from sona_task.html:", data)
     loadSurvey(data)
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
 </script>
 </html>
