@@ -146,6 +146,9 @@ def get_task(task_group, student_id):
 
     for item in res["Items"]:
         if item["completed"] == "False":
+            item["id"] = int(item["id"])
+            item["studentId"] = int(item["studentId"])
+
             return item
 
     return None
