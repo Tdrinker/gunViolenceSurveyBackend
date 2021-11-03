@@ -177,6 +177,8 @@ def get_task(task_group, student_id):
 
     for item in res["Items"]:
         if item["completed"] == "False" and int(item["id"]) not in previous_ids:
+            item["id"] = int(item["id"])
+            item["studentId"] = int(item["studentId"])
             return item
 
     return None
