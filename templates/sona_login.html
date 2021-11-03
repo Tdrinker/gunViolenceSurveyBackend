@@ -12,14 +12,24 @@
     <form action="/sona/login" class="col-md-6 offset-md-3 col-lg-4 offset-lg-4">
         <div class="form-group form-group-margin">
             <div class="row">
-                <div class="col-md-2 col-lg-3 form-label-padding">
+                <div class="">
                     <label for="studentId">Student ID</label>
                 </div>
                 <div class="col-md-10 col-lg-9">
                     <input type="text" class="form-control" id="studentId"  placeholder="Enter Student ID" name="studentId">
                 </div><br/><br/><br/><br/>
 
-                <div class="col-md-2 col-lg-3 form-label-padding">
+                <div class="">
+                    <label for="isNative">Are you a native english speaker?</label>
+                </div>
+                <div class="col-md-10 col-lg-9">
+                    <select name="isNative" id="isNative">
+                        <option value="native">yes</option>
+                        <option value="not_native">no</option>
+                    </select>
+                </div><br/><br/><br/><br/>
+
+                <div class="">
                     <label for="citizenship">Citizenship</label>
                 </div>
                 <div class="col-md-10 col-lg-9">
@@ -273,26 +283,59 @@
                     </select>
                 </div><br/><br/><br/><br/>
 
-                <div class="col-md-2 col-lg-3 form-label-padding">
-                    <label for="isNative">Are you are native english speaker</label>
+                <div class="">
+                    <label for="usDuration">How long have you been living in the US</label>
                 </div>
                 <div class="col-md-10 col-lg-9">
-                    <select name="isNative" id="isNative">
-                        <option value="native">yes</option>
-                        <option value="not_native">no</option>
+                    <select id="usDuration" name="usDuration">
+                       <option value="1orLess">1 year or less</option>
+                       <option value="2to4">2-4 years</option>
+                       <option value="5to7">5-7 years</option>
+                       <option value="8to10">8-10 years</option>
+                       <option value="10Plus">10+ years</option>
                     </select>
                 </div><br/><br/><br/><br/>
 
-                <div class="col-md-2 col-lg-3 form-label-padding">
-                    <label for="education">What is your highest education</label>
+                <div class="">
+                    <label for="politics">When it comes to politics and public affairs, where would you place yourself on a scale of 0-10, where 0 = Strong liberal (left-leaning) and 10=strong conservative (right-leaning)?</label>
+                </div>
+                <div class="col-md-10 col-lg-9">
+                    <input type="range" min="0" max="10" value="5" id="my-range" list="my-datalist"/>
+                    <datalist id="my-datalist" style="--list-length: 9;"><!--
+                      ---><option>Strong Liberal</option><!--
+                      ---><option></option><!--
+                      ---><option></option><!--
+                      ---><option></option><!--
+                      ---><option></option><!--
+                      ---><option></option><!--
+                      ---><option></option><!--
+                      ---><option></option><!--
+                      ---><option>Strong Conservative</option><!--
+                    ---></datalist>
+                </div><br/><br/><br/><br/><br/>
+
+
+                <div class="">
+                    <label for="education">What program are you currently enrolled in?</label>
                 </div>
                 <div class="col-md-10 col-lg-9">
                     <select name="education" id="education">
-                        <option value="below_high_school">have not attended high school</option>
-                        <option value="high_school">high school</option>
-                        <option value="bs">Bachelor's</option>
+                        <option value="bs">Undergraduate</option>
                         <option value="ms">Master's</option>
-                        <option value="phd">PhD or above</option>
+                        <option value="phd">Ph.D.</option>
+                    </select>
+                </div><br/><br/><br/><br/>
+
+                <div class="">
+                    <label for="mediaTime">On a given day, how many hours do you spend actively consuming news media?</label>
+                </div>
+                <div class="col-md-10 col-lg-9">
+                    <select name="mediaTime" id="mediaTime">
+                        <option value="none">None</option>
+                        <option value="less1">Less than one hour</option>
+                        <option value="1to2">1-2 hours</option>
+                        <option value="3to5">3-3 hours</option>
+                        <option value="5More">5 or more hours</option>
                     </select>
                 </div><br/><br/><br/><br/>
             </div>
@@ -302,6 +345,7 @@
                 <button type="submit" class="btn btn-primary" formmethod="post">Submit</button>
             </div>
         </div>
+        <br/><br/><br/><br/><br/><br/>
     </form>
 </body>
 </html>
