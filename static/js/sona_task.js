@@ -83,7 +83,7 @@ function loadSample(sample, sample_number) {
 
     if (sample[questionId] !== undefined) {
         let headlineParagraph = document.createElement("p");
-        headlineParagraph.innerText = sample[questionId];
+        headlineParagraph.innerText = "News Headline: \"" + sample[questionId] + "\"";
         headlineParagraph.className = "blockquote text-center";
         sampleDiv.appendChild(headlineParagraph);
     }
@@ -160,7 +160,7 @@ function getQuestions(sample_number) {
     emotionTextArea.name = tEmotionReasonName;
     emotionTextArea.id = tEmotionReasonName;
     emotionTextArea.type = "text";
-    emotionTextArea.placeholder = "describe your reason here.";
+    emotionTextArea.placeholder = "describe your reason here. Please do not provide image captioning or descriptions about what you see in the image, but focus on explaining how you feel and why.";
     emotionTextArea.rows = "5";
     questionDiv.appendChild(emotionTextArea);
     questionDiv.appendChild(verticalFiller)
