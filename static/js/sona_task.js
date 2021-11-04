@@ -200,7 +200,7 @@ function getIntensityForm(sample_number) {
 
     let label = document.createElement("label");
     label.className = "form-label";
-    label.innerText = "Intensity: ";
+    label.innerText = "";
     formGroup.appendChild(label);
 
     let rangeInput = document.createElement("input");
@@ -210,6 +210,20 @@ function getIntensityForm(sample_number) {
     rangeInput.type = "range";
     rangeInput.min = 1;
     rangeInput.max = 5;
+    rangeInput.value = 3;
+
+    let label_left = document.createElement("label");
+    label_left.id = name + "label_left";
+    label_left.style="text-align: left;"
+    label_left.innerText = "Mild"
+
+    let label_right = document.createElement("label");
+    label_right.id = name + "label_right";
+    label_right.style="float: right;"
+    label_right.innerText = "Extreme"
+
+    formGroup.appendChild(label_left);
+    formGroup.appendChild(label_right);
     formGroup.appendChild(rangeInput);
 
 
