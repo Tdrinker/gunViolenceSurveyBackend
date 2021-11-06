@@ -117,7 +117,11 @@ function loadSample(sample, sample_number) {
     sampleDiv.id = sampleId;
     sampleContainer.appendChild(sampleDiv);
 
+    let hasText = false;
+    let hasImg = false;
+
     if (sample[questionId] !== undefined) {
+        hasText = true;
         let headlineParagraph = document.createElement("p");
         headlineParagraph.innerText = "News Headline: \"" + sample[questionId] + "\"";
         headlineParagraph.className = "blockquote text-center";
@@ -125,6 +129,7 @@ function loadSample(sample, sample_number) {
     }
 
     if (sample[imgId] !== undefined) {
+        hasImg = true;
         let emotionImageDiv = loadImage(sample[imgId]);
         sampleDiv.appendChild(emotionImageDiv);
     }
@@ -134,17 +139,27 @@ function loadSample(sample, sample_number) {
 
     sampleDiv.appendChild(verticalFiller);
 
-    questionDiv = getQuestions(sample_number);
+    questionDiv = getQuestions(sample_number, hasText, hasImg);
     sampleDiv.appendChild(questionDiv);
 
     return sampleContainer;
 }
 
-function getQuestions(sample_number) {
+function getQuestions(sample_number, hasText, hasImg) {
+    let imgText = "";
+    if(hasImg && hasText) {
+        imgText = "image + text";
+    } else if (hasImg) {
+        imgText = "image";
+    } else if (hasText) {
+        imgText = "text";
+    } else {
+        imgText = "news content";
+    }
     let questionDiv = document.createElement("div");
 
     let question1Para = document.createElement("p");
-    question1Para.innerText = "Given the above news content in the context of gun violence, what is the dominant emotion that you feel?";
+    question1Para.innerText = "Given the above " + imgText + " in the context of gun violence, what is the dominant emotion that you feel?";
     question1Para.className = "blockquote";
     questionDiv.appendChild(question1Para);
 
