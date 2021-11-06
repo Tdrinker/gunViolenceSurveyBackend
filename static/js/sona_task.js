@@ -67,26 +67,36 @@ function loadSurvey(data) {
 }
 
 function submitSurveyClicked(event) {
+    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger"]
 
     hasUnfinished = false
 
+    let question1s_selected = []
+    let feelings = []
     let reasons = []
 
     for (let i = 1; i <= 20; i++) {
-        reason = document.getElementById("t_emotion_reason_" + i).value
-        reasons.push(reason)
+        feelings.push(document.getElementById("t_emotion_" + i).value)
+        reasons.push(document.getElementById("t_emotion_reason_" + i).value)
+        question1_selected = false
+        for (emotion of emotions) {
+            checked = document.getElementById(emotion + i).checked
+            if (checked) {
+                question1_selected = true
+            }
+        }
+        question1s_selected.push(question1_selected)
     }
 
-    for (let reason of reasons) {
-        console.log(reason)
-        if (reason.length == 0) {
-            hasUnfinished = true
-        }
+    for (let i = 0; i < 20; i++) {
+        let feeling = feelings[i]
+        let reason = reasons[i]
+        let question1_selected = question1s_selected[i]
+        if (reason.length == 0 || feeling.length == 0 || !question1_selected) { hasUnfinished = true }
     }
 
     if (hasUnfinished) {
         alert("you have unfinished areas")
-
         event.preventDefault();
     }
 }
