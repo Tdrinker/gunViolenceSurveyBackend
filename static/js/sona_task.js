@@ -37,8 +37,10 @@ function loadImage(imageUrl) {
         }
     }
 
-    emotionImage.width = Math.floor(emotionImage.width / i);
-    emotionImage.height = Math.floor(emotionImage.height / i);
+//    emotionImage.width = Math.floor(emotionImage.width / i);
+//    emotionImage.height = Math.floor(emotionImage.height / i);
+    emotionImage.width = 500;
+    emotionImage.height = 300;
     emotionImage.className = "img-thumbnail";
 
     imageDiv.appendChild(emotionImage);
@@ -60,7 +62,43 @@ function loadSurvey(data) {
     submitBtn.formmethod = "post";
     submitBtn.id = "submitBtn";
     submitBtn.innerText = "Submit";
+    submitBtn.onclick = function(event) {submitSurveyClicked(event)};
     surveyDiv.appendChild(submitBtn);
+}
+
+function submitSurveyClicked(event) {
+    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger"]
+
+    hasUnfinished = false
+
+    let question1s_selected = []
+    let feelings = []
+    let reasons = []
+
+    for (let i = 1; i <= 20; i++) {
+        feelings.push(document.getElementById("t_emotion_" + i).value)
+        reasons.push(document.getElementById("t_emotion_reason_" + i).value)
+        question1_selected = false
+        for (emotion of emotions) {
+            checked = document.getElementById(emotion + i).checked
+            if (checked) {
+                question1_selected = true
+            }
+        }
+        question1s_selected.push(question1_selected)
+    }
+
+    for (let i = 0; i < 20; i++) {
+        let feeling = feelings[i]
+        let reason = reasons[i]
+        let question1_selected = question1s_selected[i]
+        if (reason.length == 0 || feeling.length == 0 || !question1_selected) { hasUnfinished = true }
+    }
+
+    if (hasUnfinished) {
+        alert("you have unfinished areas")
+        event.preventDefault();
+    }
 }
 
 function loadSample(sample, sample_number) {
@@ -81,7 +119,7 @@ function loadSample(sample, sample_number) {
 
     if (sample[questionId] !== undefined) {
         let headlineParagraph = document.createElement("p");
-        headlineParagraph.innerText = sample[questionId];
+        headlineParagraph.innerText = "News Headline: \"" + sample[questionId] + "\"";
         headlineParagraph.className = "blockquote text-center";
         sampleDiv.appendChild(headlineParagraph);
     }
@@ -158,7 +196,7 @@ function getQuestions(sample_number) {
     emotionTextArea.name = tEmotionReasonName;
     emotionTextArea.id = tEmotionReasonName;
     emotionTextArea.type = "text";
-    emotionTextArea.placeholder = "describe your reason here.";
+    emotionTextArea.placeholder = "describe your reason here. Please do not provide image captioning or descriptions about what you see in the image, but focus on explaining how you feel and why.";
     emotionTextArea.rows = "5";
     questionDiv.appendChild(emotionTextArea);
     questionDiv.appendChild(verticalFiller)
@@ -198,7 +236,7 @@ function getIntensityForm(sample_number) {
 
     let label = document.createElement("label");
     label.className = "form-label";
-    label.innerText = "Intensity: ";
+    label.innerText = "";
     formGroup.appendChild(label);
 
     let rangeInput = document.createElement("input");
@@ -208,6 +246,20 @@ function getIntensityForm(sample_number) {
     rangeInput.type = "range";
     rangeInput.min = 1;
     rangeInput.max = 5;
+    rangeInput.value = 3;
+
+    let label_left = document.createElement("label");
+    label_left.id = name + "label_left";
+    label_left.style="text-align: left;"
+    label_left.innerText = "Mild"
+
+    let label_right = document.createElement("label");
+    label_right.id = name + "label_right";
+    label_right.style="float: right;"
+    label_right.innerText = "Extreme"
+
+    formGroup.appendChild(label_left);
+    formGroup.appendChild(label_right);
     formGroup.appendChild(rangeInput);
 
 

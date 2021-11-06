@@ -7,7 +7,7 @@ from werkzeug.exceptions import BadRequest
 from argparse import ArgumentParser
 
 from utils.form_helpers import validate_sona_form, validate_sona_consent_form
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, TASK_GROUP, SAMPLE_ID
+from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, US_DURATION, POLITICS, MEDIA_TIME, TASK_GROUP, SAMPLE_ID
 from utils.html_texts import FORM_ERROR
 
 from utils.dynamodb_handler import add_user, get_user, assign_task_group, get_task, write_response
@@ -62,6 +62,7 @@ def sona_login():
     if request.method == "GET":
         return render_template("sona_login.html")
 
+    print("request.form: ", request.form)
     is_request_valid, msg = validate_sona_form(request.form)
     if not is_request_valid:
         return BadRequest(msg)
@@ -73,6 +74,9 @@ def sona_login():
     session[COUNTRY] = request.form["country"]
     session[IS_NATIVE] = request.form["isNative"]
     session[EDUCATION] = request.form["education"]
+    session[US_DURATION] = request.form["usDuration"]
+    session[POLITICS] = request.form["politics"]
+    session[MEDIA_TIME] = request.form["mediaTime"]
     session[TASK_GROUP] = task_group
 
     return redirect(url_for("sona_instructions"))

@@ -18,11 +18,11 @@ def validate_sona_form(form: Dict[str, Any]) -> Tuple[bool, str]:
     if not is_valid_student_id(form[STUDENT_ID]):
         return False, "Invalid Student Id"
 
-    if not is_valid_education(form[EDUCATION]):
-        return False, "we require at least high school education to participate in this survey"
-
-    if not is_valid_english_speaker((form[IS_NATIVE])):
-        return False, "we require english speakers to participate in this survey"
+    # if not is_valid_education(form[EDUCATION]):
+    #     return False, "we require at least high school education to participate in this survey"
+    #
+    # if not is_valid_english_speaker((form[IS_NATIVE])):
+    #     return False, "we require english speakers to participate in this survey"
 
     return True, ""
 
