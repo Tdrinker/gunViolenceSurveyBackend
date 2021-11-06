@@ -7,10 +7,29 @@ from werkzeug.exceptions import BadRequest
 from argparse import ArgumentParser
 
 from utils.form_helpers import validate_sona_form, validate_sona_consent_form
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, US_DURATION, POLITICS, MEDIA_TIME, TASK_GROUP, SAMPLE_ID
+from utils.const import (
+    STUDENT_ID,
+    CONSENT_AGREED,
+    COUNTRY,
+    IS_NATIVE,
+    EDUCATION,
+    US_DURATION,
+    POLITICS,
+    MEDIA_TIME,
+    TASK_GROUP,
+    SAMPLE_ID,
+    NUM_TASKS_COMPLETED,
+)
 from utils.html_texts import FORM_ERROR
 
-from utils.dynamodb_handler import add_user, get_user, assign_task_group, get_task, write_response
+from utils.dynamodb_handler import (
+    add_user,
+    get_user,
+    assign_task_group,
+    get_task,
+    write_response,
+    get_student_responses_ids,
+)
 
 app = Flask(__name__)
 app.secret_key = str(uuid.uuid5(uuid.NAMESPACE_DNS, "aiem.bu.edu"))
@@ -68,6 +87,11 @@ def sona_login():
         return BadRequest(msg)
 
     is_new_user, user = user_login(request.form)
+    studentId = int(user["Item"]["id"])
+    previousIds = get_student_responses_ids(studentId)
+    if len(previousIds) == 4:
+        return render_template("all_tasks_completed.html")
+
     task_group = assign_task_group(int(user["Item"]["previous_task_group"]))
 
     session[STUDENT_ID] = request.form["studentId"]
@@ -78,16 +102,15 @@ def sona_login():
     session[POLITICS] = request.form["politics"]
     session[MEDIA_TIME] = request.form["mediaTime"]
     session[TASK_GROUP] = task_group
+    session[NUM_TASKS_COMPLETED] = len(previousIds)
 
-    return redirect(url_for("sona_instructions"))
+    return render_template("sona_instructions.html", numTasksCompleted=len(previousIds))
 
 
 @app.route("/sona/instructions", methods=["GET"])
 def sona_instructions():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
         return redirect(url_for("sona_informed_consent"))
-
-    task_group = session[TASK_GROUP]
 
     return render_template("sona_instructions.html")
 
@@ -112,11 +135,13 @@ def sona_survey_submit():
     sampleId = session[SAMPLE_ID]
     taskGroup = session[TASK_GROUP]
     studentId = session[STUDENT_ID]
+    numTasksCompleted = session[NUM_TASKS_COMPLETED]
+    numTasksCompleted += 1
 
     res = write_response(studentId, sampleId, taskGroup, request.form)
 
     if res["ResponseMetadata"]["HTTPStatusCode"] == 200:
-        return render_template("submission_successful.html")
+        return render_template("submission_successful.html", numTasksCompleted=numTasksCompleted)
     else:
         return (
             "There is an error in your submission, please copy this text and email it to sejin@bu.edu for completing survey: "

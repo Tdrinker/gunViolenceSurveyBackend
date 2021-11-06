@@ -5,24 +5,15 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/common.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
-
-    <script src="{{ url_for('static',filename='js/sona_informed_consent.js') }}"></script>
-
 </head>
 <body>
     <div class="vertical-filler-2-5"></div>
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h2 class="text-center">Submission Status</h2>
-            {% if numTasksCompleted < 4 %}
+            <h2 class="text-center">All Sessions Completed</h2>
             <p>
-                Thank you your response has been successfully recorded. You have completed {{numTasksCompleted}} out of 4 sessions.
+                Thank you, you have already completed all four sessions of the survey and need not do more.
             </p>
-            {% else %}
-            <p>
-                Thank you your response has been successfully recorded. You have completed all the sessions.
-            </p>
-            {% endif %}
         </div>
     </div>
 </body>
