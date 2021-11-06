@@ -10,7 +10,16 @@ import random
 from argparse import ArgumentParser
 import sys
 
-from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
+# from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION
+
+STUDENT_ID = "studentId"
+CONSENT_AGREED = "consentAgreed"
+COUNTRY = "country"
+IS_NATIVE = "isNative"
+EDUCATION = "education"
+TASK_GROUP = "taskGroup"
+SAMPLE_ID = "sampleId"
+
 
 load_dotenv()
 
@@ -37,7 +46,7 @@ resource = boto3.resource(
 
 
 def read_csv_data():
-    path1 = abspath(".") + "/data/aiem_gv_data_sheet_testing.csv"
+    path1 = abspath(".") + "/data/aiem_gv_data_sheet_testing_20.csv"
 
     df = pd.read_csv(path1)
     return df
@@ -98,8 +107,8 @@ def populate_table_task_group(df, group_num):
     # iterate through all tasks
     for index, task in df.iterrows():
         all_samples_in_task = []
-        # 10 samples of each task
-        for i in range(1, 11):
+        # 20 samples of each task
+        for i in range(1, 21):
             img_url = "img_url_" + str(i)
             question_url = "question_" + str(i)
             all_samples_in_task.append({img_url: task[img_url], question_url: task[question_url]})
