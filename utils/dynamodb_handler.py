@@ -243,6 +243,13 @@ def write_response(studentId, sampleId, taskGroup, form):
     user_table = resource.Table("User")
     user_table.put_item(Item=user)
 
+    task_group_table = resource.Table("Task_group_" + str(taskGroup))
+    sample = task_group_table.get_item(Key={"id": int(sampleId)})
+    sample_item = sample["Item"]
+    sample_item["completed"] = "True"
+    sample_item["studentId"] = int(studentId)
+    task_group_table.put_item(Item=sample_item)
+
     return res
 
 
