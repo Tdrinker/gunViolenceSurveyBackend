@@ -115,7 +115,7 @@ def sona_instructions():
     return render_template("sona_instructions.html")
 
 
-@app.route("/sona/survey", methods=["POST"])
+@app.route("/sona/survey", methods=["POST", "GET"])
 def sona_survey():
     if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
         return redirect(url_for("sona_informed_consent"))
@@ -154,6 +154,24 @@ def sona_survey_submit():
                 }
             )
         )
+
+
+@app.route("/sona/next", methods=["GET"])
+def sona_next_task():
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
+        return redirect(url_for("sona_informed_consent"))
+
+    studentId = session[STUDENT_ID]
+    previousIds = get_student_responses_ids(studentId)
+    if len(previousIds) == 4:
+        return render_template("all_tasks_completed.html")
+    session[NUM_TASKS_COMPLETED] = len(previousIds)
+
+    previous_task_group = session[TASK_GROUP]
+    task_group = assign_task_group(previous_task_group)
+    session[TASK_GROUP] = task_group
+
+    return redirect(url_for("sona_survey"))
 
 
 if __name__ == "__main__":

@@ -200,7 +200,7 @@ def get_student_responses_ids(student_id):
 
 
 def get_group_count(min_group=1, max_group=30):
-    minimal_task_group = 0
+    minimal_task_groups = []
     minimal_task_group_count = 200
     for i in range(min_group, max_group + 1):
         ts = resource.Table("Task_group_" + str(i))
@@ -208,12 +208,12 @@ def get_group_count(min_group=1, max_group=30):
             Select="COUNT", ScanFilter={"completed": {"AttributeValueList": [True], "ComparisonOperator": "EQ"}}
         )
         if res["Count"] < minimal_task_group_count:
-            minimal_task_group = i
+            minimal_task_groups = [i]
             minimal_task_group_count = res["Count"]
         elif res["Count"] == minimal_task_group_count:
-            minimal_task_group = random.choice([minimal_task_group, i])
+            minimal_task_groups.append(i)
 
-    return minimal_task_group
+    return random.choice(minimal_task_groups)
 
 
 def get_user(form: Dict[str, Any]):
