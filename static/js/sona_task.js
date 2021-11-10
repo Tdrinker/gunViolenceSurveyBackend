@@ -67,7 +67,7 @@ function loadSurvey(data) {
 }
 
 function submitSurveyClicked(event) {
-    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger"]
+    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger", "Disgust"]
 
     hasUnfinished = false
 
@@ -163,7 +163,7 @@ function getQuestions(sample_number, hasText, hasImg) {
     question1Para.className = "blockquote";
     questionDiv.appendChild(question1Para);
 
-    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger"];
+    let emotions = ["Amusement", "Awe", "Contentment", "Excitement", "Fear", "Sadness", "Anger", "Disgust"];
     for (let i = 0; i < emotions.length; i++) {
         let option = getFormCheck(emotions[i], sample_number);
         questionDiv.appendChild(option);
