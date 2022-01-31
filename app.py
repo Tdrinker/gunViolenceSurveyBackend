@@ -81,7 +81,6 @@ def sona_login():
     if request.method == "GET":
         return render_template("sona_login.html")
 
-    print("request.form: ", request.form)
     is_request_valid, msg = validate_sona_form(request.form)
     if not is_request_valid:
         return BadRequest(msg)
@@ -89,7 +88,7 @@ def sona_login():
     is_new_user, user = user_login(request.form)
     studentId = int(user["Item"]["id"])
     previousIds = get_student_responses_ids(studentId)
-    if len(previousIds) == 4:
+    if len(previousIds) >= 4:
         return render_template("all_tasks_completed.html")
 
     task_group = assign_task_group(int(user["Item"]["previous_task_group"]))
