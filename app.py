@@ -87,8 +87,8 @@ def sona_login():
 
     is_new_user, user = user_login(request.form)
     studentId = int(user["Item"]["id"])
-    previousIds = get_student_responses_ids(studentId)
-    if len(previousIds) >= 4:
+    _, newPreviousIds = get_student_responses_ids(studentId)
+    if len(newPreviousIds) >= 4:
         return render_template("all_tasks_completed.html")
 
     task_group = assign_task_group(int(user["Item"]["previous_task_group"]))
@@ -101,9 +101,9 @@ def sona_login():
     session[POLITICS] = request.form["politics"]
     session[MEDIA_TIME] = request.form["mediaTime"]
     session[TASK_GROUP] = task_group
-    session[NUM_TASKS_COMPLETED] = len(previousIds)
+    session[NUM_TASKS_COMPLETED] = len(newPreviousIds)
 
-    return render_template("sona_instructions.html", numTasksCompleted=len(previousIds))
+    return render_template("sona_instructions.html", numTasksCompleted=len(newPreviousIds))
 
 
 @app.route("/sona/instructions", methods=["GET"])
@@ -161,10 +161,10 @@ def sona_next_task():
         return redirect(url_for("sona_informed_consent"))
 
     studentId = session[STUDENT_ID]
-    previousIds = get_student_responses_ids(studentId)
-    if len(previousIds) == 4:
+    _, newPreviousIds = get_student_responses_ids(studentId)
+    if len(newPreviousIds) >= 4:
         return render_template("all_tasks_completed.html")
-    session[NUM_TASKS_COMPLETED] = len(previousIds)
+    session[NUM_TASKS_COMPLETED] = len(newPreviousIds)
 
     previous_task_group = session[TASK_GROUP]
     task_group = assign_task_group(previous_task_group)

@@ -12,6 +12,8 @@ import sys
 
 from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, US_DURATION, POLITICS, MEDIA_TIME
 
+
+
 load_dotenv()
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
@@ -55,7 +57,7 @@ def create_table_response():
                 "AttributeType": "N",  # N -> Number (S -> String, B-> Binary)
             },
         ],
-        TableName="Responses",  # Name of the table
+        TableName="Responses_New",  # Name of the table
         KeySchema=[  # Partition key/sort key attribute
             {
                 "AttributeName": "id",
@@ -175,8 +177,9 @@ def assign_task_group(previous_task_group=0):
 
 def get_task(task_group, student_id):
     ts = resource.Table("Task_group_" + str(task_group))
-    previous_ids = get_student_responses_ids(student_id)
+    old_previous_ids, new_previous_ids = get_student_responses_ids(student_id)
     res = ts.scan()
+    previous_ids = old_previous_ids.union(new_previous_ids)
 
     for item in res["Items"]:
         if item["completed"] == "False" and int(item["id"]) not in previous_ids:
@@ -188,15 +191,22 @@ def get_task(task_group, student_id):
 
 
 def get_student_responses_ids(student_id):
-    response_table = resource.Table("Responses")
-    previous_ids = []
+    old_previous_ids = []
+    new_previous_ids = []
 
-    res = response_table.scan()
-    for item in res["Items"]:
+    old_response_table = resource.Table("Responses")
+    old_res = old_response_table.scan()
+    for item in old_res["Items"]:
         if int(item["studentId"]) == int(student_id):
-            previous_ids.append(int(item["sampleId"]))
+            old_previous_ids.append(int(item["sampleId"]))
 
-    return set(previous_ids)
+    new_response_table = resource.Table("Responses_New")
+    new_res = new_response_table.scan()
+    for item in new_res["Items"]:
+        if int(item["studentId"]) == int(student_id):
+            new_previous_ids.append(int(item["sampleId"]))
+
+    return set(old_previous_ids), set(new_previous_ids)
 
 
 def get_group_count(min_group=1, max_group=30):
@@ -235,7 +245,7 @@ def write_response(studentId, sampleId, taskGroup, form):
         "taskGroup": int(taskGroup),
         "response": dict(form),
     }
-    response_table = resource.Table("Responses")
+    response_table = resource.Table("Responses_New")
     res = response_table.put_item(Item=item)
 
     user = get_user({STUDENT_ID: studentId})
