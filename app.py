@@ -91,8 +91,6 @@ def sona_login():
     if len(newPreviousIds) >= 4:
         return render_template("all_tasks_completed.html")
 
-    task_group = assign_task_group(int(user["Item"]["previous_task_group"]))
-
     session[STUDENT_ID] = request.form["studentId"]
     session[COUNTRY] = request.form["country"]
     session[IS_NATIVE] = request.form["isNative"]
@@ -100,7 +98,6 @@ def sona_login():
     session[US_DURATION] = request.form["usDuration"]
     session[POLITICS] = request.form["politics"]
     session[MEDIA_TIME] = request.form["mediaTime"]
-    session[TASK_GROUP] = task_group
     session[NUM_TASKS_COMPLETED] = len(newPreviousIds)
 
     return render_template("sona_instructions.html", numTasksCompleted=len(newPreviousIds))
@@ -108,7 +105,7 @@ def sona_login():
 
 @app.route("/sona/instructions", methods=["GET"])
 def sona_instructions():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
         return redirect(url_for("sona_informed_consent"))
 
     return render_template("sona_instructions.html")
@@ -116,12 +113,12 @@ def sona_instructions():
 
 @app.route("/sona/survey", methods=["POST", "GET"])
 def sona_survey():
-    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None or session[TASK_GROUP] is None:
+    if session.get(STUDENT_ID) is None or session.get(CONSENT_AGREED) is None:
         return redirect(url_for("sona_informed_consent"))
 
-    task_group = session[TASK_GROUP]
-    data = get_task(task_group, session[STUDENT_ID])
+    task_group, data = get_task(session[STUDENT_ID])
     session[SAMPLE_ID] = data["id"]
+    session[TASK_GROUP] = task_group
 
     return render_template("sona_task.html", data=data)
 

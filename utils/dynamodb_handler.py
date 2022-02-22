@@ -6,12 +6,12 @@ import pandas as pd
 from os.path import abspath
 import uuid
 import random
+import csv
 
 from argparse import ArgumentParser
 import sys
 
 from utils.const import STUDENT_ID, CONSENT_AGREED, COUNTRY, IS_NATIVE, EDUCATION, US_DURATION, POLITICS, MEDIA_TIME
-
 
 
 load_dotenv()
@@ -175,17 +175,47 @@ def assign_task_group(previous_task_group=0):
     return task_group
 
 
-def get_task(task_group, student_id):
-    ts = resource.Table("Task_group_" + str(task_group))
-    old_previous_ids, new_previous_ids = get_student_responses_ids(student_id)
-    res = ts.scan()
-    previous_ids = old_previous_ids.union(new_previous_ids)
+def get_queue():
+    queue = []
+    with open("./utils/queue.csv", "r") as fp:
+        reader = csv.reader(fp)
+        for row in reader:
+            queue.append(row)
 
-    for item in res["Items"]:
-        if item["completed"] == "False" and int(item["id"]) not in previous_ids:
-            item["id"] = int(item["id"])
-            item["studentId"] = int(item["studentId"])
-            return item
+    return queue
+
+
+def write_queue(queue):
+    with open("./utils/queue.csv", "w") as fp:
+        writer = csv.writer(fp)
+        writer.writerows(queue)
+
+
+def remove_from_queue(task_group, sample_id):
+    queue = get_queue()
+    for ind, row in enumerate(queue):
+        if int(row[0]) == task_group and int(row[1]) == sample_id:
+            del queue[ind]
+            break
+
+    write_queue(queue)
+
+
+def get_task(student_id):
+    old_previous_ids, new_previous_ids = get_student_responses_ids(student_id)
+    previous_ids = old_previous_ids.union(new_previous_ids)
+    queue = get_queue()
+
+    for task in queue:
+        task_group, sample_id = int(task[0]), int(task[1])
+        ts = resource.Table(f"Task_group_{task_group}")
+        res = ts.scan()
+
+        for item in res["Items"]:
+            if item["completed"] == "False" and int(item["id"]) not in previous_ids and int(item["id"]) == sample_id:
+                item["id"] = int(item["id"])
+                item["studentId"] = int(item["studentId"])
+                return task_group, item
 
     return None
 
@@ -261,6 +291,8 @@ def write_response(studentId, sampleId, taskGroup, form):
     sample_item["completed"] = "True"
     sample_item["studentId"] = int(studentId)
     task_group_table.put_item(Item=sample_item)
+
+    remove_from_queue(int(taskGroup), int(sampleId))
 
     return res
 
